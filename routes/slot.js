@@ -130,6 +130,7 @@ router.get('/', (req, res) => {
 					// ------ save to db
 					itnoodle.studentCol.find({year: newSlotDoc.year, term: newSlotDoc.term}, (err, cursor) => {
 						cursor.toArray((err, stds) => {
+							// TODO if(err) log and return
 							let changed_students = {};
 							if(!stds) stds = [];
 							console.log('number of students in db ' + stds.length);
@@ -137,11 +138,12 @@ router.get('/', (req, res) => {
 								if(students[std.code]) {
 									if(JSON.stringify(students[std.code].slots)!=JSON.stringify(std.slots)) {
 										changed_students[std.code] = students[std.code];
-										changed_students['_id'] = std['_id'];
+										changed_students[std.code]['_id'] = std['_id'];
 									}
 								}
 								delete students[std.code];	
 							});
+							console.log("changed_students");
 							console.log("inserted students " + Object.keys(students).length);
 							// insert students
 							let bulk = itnoodle.studentCol.initializeUnorderedBulkOp();
@@ -149,7 +151,9 @@ router.get('/', (req, res) => {
 								bulk.insert(students[code]);
 							});
 							// update students
+							console.log("Update student " + Object.keys(changed_students).length);
 							Object.keys(changed_students).forEach((code) => {
+								// TODO using updateOne instead
 								bulk
 								.find({_id: changed_students[code]['_id']})
 								.update({$set: {slots: changed_students[code]['slots']}});

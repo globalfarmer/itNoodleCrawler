@@ -7,7 +7,9 @@ var querystring = require('querystring'),
 module.exports = {
 	crawl: function(options, params) {
         let timeLabel = 'crawl_' + (new Date()).getTime();
-        console.log(options);
+        console.log('options ' + JSON.stringify(options));
+        if(params)
+            console.log('params ' + JSON.stringify(params));
         console.time(timeLabel);
         let md5sum = crypto.createHash('md5');
         return new Promise((resolve, reject) => {
@@ -43,7 +45,7 @@ module.exports = {
             if(options.checkExist==1 && fs.existsSync(fname))
                 return;
             let tmpFilename = path.join(dir, [['tmp', (new Date()).getTime()].join(''),filename[filename.length-1]].join('_'));
-            console.log('tmpFilename ' + tmpFilename);
+            console.log('tmpFilneame ' + tmpFilename);
             fs.writeFileSync(tmpFilename, data);
             fs.renameSync(tmpFilename, fname);
         }
