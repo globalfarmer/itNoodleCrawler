@@ -7,7 +7,8 @@
 
 var express = require("express"),
 	bodyParser = require('body-parser'),
-	app = express();
+	app = express(),
+	it_parser = require('./util/parser.js');
 
 var itnoodle = require('./project_modules/itnoodle.js');
 var	MongoClient = require('mongodb').MongoClient;
@@ -46,6 +47,26 @@ MongoClient.connect(config.db.host, function(err, client) {
 		itnoodle.db = client.db(config.db.dbname);
 		itnoodle.slotCol = itnoodle.db.collection('slot');
 		itnoodle.studentCol = itnoodle.db.collection('student');
+		let bulk = itnoodle.studentCol.initializeUnorderedBulkOp();
+		itnoodle.studentCol.find().toArray((err, stds) => {
+			let str_to_date = function(str) {
+				if(typeof(str) == 'string')
+					str = it_parser.uet_date(str);
+				return str;
+			}
+			stds.forEach((std) => {
+				std.birthday = str_to_date(std.birthday);
+				if(std.finaltests)
+					Object.keys(std.finaltests).forEach((code) => {
+						std.finaltests[code].day = 
+							str_to_date(std.finaltests[code].day);
+					})
+				bulk.find({_id: std._id}).updateOne({$set: std});
+			});
+			console.log(bulk.length);
+			if(bulk.length > 0)
+				bulk.execute();
+		});
 		var server = app.listen(8080, () => {
 			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 			console.log('Server started on port ' + 8080);
