@@ -3,6 +3,7 @@ var router = express.Router();
 var cheerio = require('cheerio');
 var crawler_util = require('../util/crawler_util.js');
 var itnoodle = require('../project_modules/itnoodle.js');
+var itparser = require('../util/parser.js');
 var options = 
 		{
 			"host": "112.137.129.87",
@@ -63,7 +64,7 @@ function bulk_crawl(stds, cnt, year, term) {
 					code: ft[6].split(' ').join('').toLowerCase(),
 					name: ft[7],
 					seat_no: ft[5],
-					day: ft[8],
+					day: itparser.uet_date(ft[8]),
 					time: ft[9],
 					shift: ft[10],
 					room: ft[11],

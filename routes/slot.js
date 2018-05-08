@@ -3,6 +3,7 @@ var router = express.Router();
 var cheerio = require('cheerio');
 var querystring = require('querystring');
 var crawler_util = require('../util/crawler_util.js');
+var itparser = require('../util/parser.js');
 var crypto = require('crypto');
 var itnoodle = require('../project_modules/itnoodle.js');
 var options = 
@@ -77,7 +78,7 @@ router.get('/', (req, res) => {
 							students[slot[1]] = {
 								code: slot[1],
 								fullname: slot[2],
-								birthday: slot[3],
+								birthday: itparser.uet_date(slot[3]),
 								klass: slot[4],
 								year: newSlotDoc.year,
 								term: newSlotDoc.term,
