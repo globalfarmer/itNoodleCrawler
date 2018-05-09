@@ -47,6 +47,8 @@ MongoClient.connect(config.db.host, function(err, client) {
 		itnoodle.slotCol = itnoodle.db.collection('slot');
 		itnoodle.studentCol = itnoodle.db.collection('student');
 		itnoodle.announceCol = itnoodle.db.collection('announce');
+		itnoodle.listyearCol = itnoodle.db.collection('listyear');
+		itnoodle.scoreboardCol = itnoodle.db.collection('scoreboard');
 		var server = app.listen(8080, () => {
 			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 			console.log('Server started on port ' + 8080);
