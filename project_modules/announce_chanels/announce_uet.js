@@ -50,14 +50,18 @@ function bulk_job(optionsArr, curIndex) {
             		announce.category = [];
             		detail('a',spans[2]).each((i, el) => {announce.category.push(detail(el).text().trim())})
 					// console.log(announce);
-					console.log(announce.category);
+					console.log(announce.title);
 					itnoodle.announceCol.findOne({url: announce.url}).then((ann) => {
 						if(!ann) {
 							console.log("insert announce " + announce.url);
 							itnoodle.announceCol.insert(announce);
 						}
-						else
+						else {
 							console.log("announce is exist " + announce.url);
+							if(ann.title != announce.title) {
+								itnoodle.announceCol.updateOne({_id: ann._id}, {$set: {title: announce.title}});
+							}
+						}
 					})
             	});
 			}).end();
