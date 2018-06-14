@@ -118,7 +118,7 @@ router.get('/', (req, res) => {
 	    							code: sb[1].split(" ").join("").toLowerCase()
 	    						}
 	    						if(sb[2]) {
-	    							sboard.course.src = [opts.host,opts.path.split('/')[1],sb[2]].join('/');
+	    							sboard.course.src = encodeURI("http://"+[opts.host,opts.path.split('/')[1],sb[2]].join('/'));
 	    							sboard.course.uploadtime = uet_time_parser(sb[3].split(' ')[0], sb[3].split(' ')[1]);
 	    							scoreboard_download_file.push(['./data', sb[2].split('/'), sboard.course.src, {checkExist: 1}]);
 	    						}
@@ -135,7 +135,7 @@ router.get('/', (req, res) => {
 	    								console.log(sboard.course.name + " " + sboard.course.code);
 	    								itnoodle.scoreboardCol.insert(sboard);
 	    							}
-	    							else if(!doc.course.src&&sboard.course.src) {
+	    							else if(doc.course.src!==sboard.course.src) {
 	    								console.log("---------UPDATE scoreboard:")
 	    								console.log(sboard.course.name + " " + sboard.course.code);
 	    								itnoodle.scoreboardCol.update({_id: doc._id}, {$set: sboard});
